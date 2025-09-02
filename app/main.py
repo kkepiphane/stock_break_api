@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.core.config import settings
-from app.api.v1 import stock
+from app.api import stock
 
 app = FastAPI(title=settings.app_name)
 
-app.include_router(stock.router, prefix="/api/v1/stock", tags=["Stock"])
+app.include_router(stock.router, prefix="/api/stock", tags=["Stock"])

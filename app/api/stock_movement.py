@@ -1,32 +1,101 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from app.core.database import get_db
-from app.models.product import Product
-from app.models.stock_movement import StockMovement
+from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
+from sqlalchemy.orm import Session
+
+from app.dependencies import get_db, get_stock_movement_service
 from app.schemas.stock_movement import StockMovementCreate, StockMovementOut
+from app.services.stock_movement_service import StockMovementService
+from app.core.security import get_current_user
 
-router = APIRouter()
+router = APIRouter(prefix="/stock-movements", tags=["stock movements"])
 
-# CREATE stock movement
-@router.post("/", response_model=StockMovementOut)
-async def create_stock_movement(data: StockMovementCreate, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Product).where(Product.id == data.product_id))
-    product = result.scalar_one_or_none()
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+@router.post("/", response_model=StockMovementOut, status_code=status.HTTP_201_CREATED)
+async def create_stock_movement(
+    movement_create: StockMovementCreate,
+    movement_service: StockMovementService = Depends(get_stock_movement_service),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user["role"] not in ["admin", "commercial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    try:
+        movement = movement_service.create_movement(movement_create)
+        return movement
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
-    # mettre à jour la quantité
-    product.quantity += data.change
+@router.get("/", response_model=List[StockMovementOut])
+async def get_all_movements(
+    skip: int = 0,
+    limit: int = 100,
+    movement_service: StockMovementService = Depends(get_stock_movement_service),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user["role"] not in ["admin", "commercial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    movements = movement_service.movement_repo.get_all(skip, limit)
+    return movements
 
-    movement = StockMovement(**data.dict())
-    db.add(movement)
-    await db.commit()
-    await db.refresh(movement)
+@router.get("/recent/", response_model=List[StockMovementOut])
+async def get_recent_movements(
+    days: int = 7,
+    skip: int = 0,
+    limit: int = 100,
+    movement_service: StockMovementService = Depends(get_stock_movement_service),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user["role"] not in ["admin", "commercial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    movements = movement_service.get_recent_movements(days, skip, limit)
+    return movements
+
+@router.get("/product/{product_id}", response_model=List[StockMovementOut])
+async def get_product_movements(
+    product_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    movement_service: StockMovementService = Depends(get_stock_movement_service),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user["role"] not in ["admin", "commercial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    movements = movement_service.get_product_movements(product_id, skip, limit)
+    return movements
+
+@router.get("/{movement_id}", response_model=StockMovementOut)
+async def get_movement(
+    movement_id: int,
+    movement_service: StockMovementService = Depends(get_stock_movement_service),
+    current_user: dict = Depends(get_current_user)
+):
+    if current_user["role"] not in ["admin", "commercial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    
+    movement = movement_service.movement_repo.get_by_id(movement_id)
+    if not movement:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Stock movement not found"
+        )
     return movement
-
-# READ movements of a product
-@router.get("/product/{product_id}", response_model=list[StockMovementOut])
-async def get_movements(product_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(StockMovement).where(StockMovement.product_id == product_id))
-    return result.scalars().all()

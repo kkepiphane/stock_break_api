@@ -1,22 +1,22 @@
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class Settings(BaseSettings):
-    app_name: str
-    app_env: str
-    app_debug: bool
-    app_port: int
+    # PostgreSQL configuration
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: str = "5432"
+    POSTGRES_DB: str
+    
+    # JWT configuration
+    SECRET_KEY: str = "votre_secret_key_super_secrete_changez_moi_en_production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    db_host: str
-    db_port: int
-    db_user: str
-    db_pass: str
-    db_name: str
-
-    redis_host: str
-    redis_port: int
-
-    secret_key: str
-    access_token_expire_minutes: int
+    @property
+    def DATABASE_URL(self):
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     class Config:
         env_file = ".env"

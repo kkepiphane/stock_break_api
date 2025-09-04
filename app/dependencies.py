@@ -1,8 +1,8 @@
-#app/startup.py
+#app/dependencies.py
 from typing import Generator
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
+from app.core.database import SessionLocal
 from app.services.user_service import UserService
 from app.services.product_service import ProductService
 from app.services.stock_movement_service import StockMovementService

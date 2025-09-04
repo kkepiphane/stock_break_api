@@ -2,7 +2,7 @@
 import time
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
-from app.database import engine
+from app.core.database import engine
 from app.core.config import settings
 import logging
 

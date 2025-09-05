@@ -5,7 +5,6 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
 from alembic import context
 
 # Add the app directory to the Python path
@@ -14,6 +13,12 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 # Import your models and Base
 from app.models.base import Base
 from app.core.config import settings
+
+from app.models.user import User
+from app.models.product import Product
+from app.models.stock_movement import StockMovement
+from app.models.alert import Alert
+
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)

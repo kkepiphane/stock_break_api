@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
+from app.logging_config import logger
 
 from app.api import auth, users, products, stock_movements, alerts
 from app.startup import wait_for_postgres, init_db
@@ -46,6 +47,8 @@ app.include_router(alerts.router)
 
 @app.get("/")
 async def root():
+    logger.debug("Debug message: root endpoint called")
+    logger.info("Info message: root endpoint called")
     return {"message": "Stock Management API is running!"}
 
 @app.get("/health")

@@ -11,9 +11,9 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     
     # JWT configuration
-    SECRET_KEY: str = "votre_secret_key_super_secrete_changez_moi_en_production"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     @property
     def DATABASE_URL(self):

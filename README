@@ -1,2 +1,75 @@
-# pour générer automatqiement les secrete_key
-python -c "import secrets; print(secrets.token_hex(32))"
+
+---
+
+## ⚙️ Installation et configuration
+
+
+## Structure du projet (exemple)
+```bash
+    📦 stock-management-api
+    ┣ 📂 alembic/              # Fichiers de migration
+    ┣ 📂 app/
+    ┃ ┣ 📂 api/               # Routes de l’API
+    ┃ ┣ 📂 core/              # Config & sécurité
+    ┃ ┣ 📂 models/            # Modèles SQLAlchemy
+    ┃ ┣ 📂 schemas/           # Schémas Pydantic
+    ┃ ┗ 📜 main.py            # Point d’entrée FastAPI
+    ┣ 📜 .env                 # Variables d’environnement
+    ┣ 📜 requirements.txt     # Dépendances
+    ┗ 📜 README.md
+```
+
+### 1️⃣ Cloner le projet
+```bash
+git clone https://github.com/ton-compte/stock-management-api.git
+cd stock-management-api
+```
+### Créer et activer un environnement virtuel
+```bash
+    python -m venv venv
+    source venv/bin/activate   # Linux/macOS
+    venv\Scripts\activate      # Windows
+```
+### Installer les dépendances
+```bash
+    pip install -r requirements.txt
+```
+
+### Configurer les variables d’environnement
+```bash
+    # PostgreSQL Configuration
+    POSTGRES_USER=username
+    POSTGRES_PASSWORD=your_password
+    POSTGRES_HOST=localhost
+    POSTGRES_PORT=5432
+    POSTGRES_DB=data_base_name
+
+    # JWT Configuration
+    SECRET_KEY=secret_code_generate
+    ALGORITHM=HS256
+    ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+```
+## Pour générer automatiquement une clé secrète
+```bash
+    python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+## 🗄️ Base de données
+```bash
+    alembic init alembic
+```
+
+## Créer une migration
+```bash
+    alembic revision --autogenerate -m "Initial migration"
+```
+
+## Appliquer les migrations
+```bash
+    alembic upgrade head
+```
+## Lancer le projet
+```bash
+    uvicorn app.main:app --reload
+```

@@ -30,11 +30,26 @@ async def create_product(
             detail=str(e)
         )
 
+# @router.get("/", response_model=List[ProductOut])
+# async def get_all_products(
+#     skip: int = 0,
+#     limit: int = 100,
+#     product_service: ProductService = Depends(get_product_service),
+#     current_user: dict = Depends(get_current_user)
+# ):
+#     if current_user["role"] == "admin":
+#         products = product_service.product_repo.get_all(skip, limit)
+#     else:
+#         # Seulement les produits actifs pour les non-admins
+#         products = product_service.product_repo.get_active_products(skip, limit)
+#     return products
+
 @router.get("/", response_model=List[ProductOut])
 async def get_all_products(
     skip: int = 0,
     limit: int = 100,
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    current_user: dict = Depends(get_current_user)  # Authentification REQUISE
 ):
     products = product_service.product_repo.get_all(skip, limit)
     return products

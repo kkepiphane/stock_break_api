@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_alert_service
 from app.schemas.alert import AlertOut
 from app.services.alert_service import AlertService
-from app.core.security import get_current_user
+from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 

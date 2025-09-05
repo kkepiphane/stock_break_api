@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_stock_movement_service
 from app.schemas.stock_movement import StockMovementCreate, StockMovementOut
 from app.services.stock_movement_service import StockMovementService
-from app.core.security import get_current_user
+from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/stock-movements", tags=["stock movements"])
 

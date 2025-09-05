@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_product_service
 from app.schemas.product import ProductCreate, ProductUpdate, ProductOut
 from app.services.product_service import ProductService
-from app.core.security import get_current_user
+from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/products", tags=["products"])
 

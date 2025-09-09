@@ -16,7 +16,7 @@ async def get_all_alerts(
     alert_service: AlertService = Depends(get_alert_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -30,7 +30,7 @@ async def get_active_alerts(
     alert_service: AlertService = Depends(get_alert_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -44,7 +44,7 @@ async def get_alerts_stats(
     alert_service: AlertService = Depends(get_alert_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -59,7 +59,7 @@ async def get_product_alerts(
     alert_service: AlertService = Depends(get_alert_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -74,7 +74,7 @@ async def resolve_alert(
     alert_service: AlertService = Depends(get_alert_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"

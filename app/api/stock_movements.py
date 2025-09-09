@@ -15,7 +15,7 @@ async def create_stock_movement(
     movement_service: StockMovementService = Depends(get_stock_movement_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -37,7 +37,7 @@ async def get_all_movements(
     movement_service: StockMovementService = Depends(get_stock_movement_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -54,7 +54,7 @@ async def get_recent_movements(
     movement_service: StockMovementService = Depends(get_stock_movement_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -71,7 +71,7 @@ async def get_product_movements(
     movement_service: StockMovementService = Depends(get_stock_movement_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -86,7 +86,7 @@ async def get_movement(
     movement_service: StockMovementService = Depends(get_stock_movement_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"

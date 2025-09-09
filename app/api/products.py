@@ -15,7 +15,7 @@ async def create_product(
     product_service: ProductService = Depends(get_product_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -37,7 +37,7 @@ async def create_product(
 #     product_service: ProductService = Depends(get_product_service),
 #     current_user: dict = Depends(get_current_user)
 # ):
-#     if current_user["role"] == "admin":
+#     if current_user.role == "admin":
 #         products = product_service.product_repo.get_all(skip, limit)
 #     else:
 #         # Seulement les produits actifs pour les non-admins
@@ -86,7 +86,7 @@ async def get_low_stock_products(
     product_service: ProductService = Depends(get_product_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -102,7 +102,7 @@ async def update_product(
     product_service: ProductService = Depends(get_product_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] not in ["admin", "commercial"]:
+    if current_user.role not in ["admin", "commercial"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -122,7 +122,7 @@ async def delete_product(
     product_service: ProductService = Depends(get_product_service),
     current_user: dict = Depends(get_current_user)
 ):
-    if current_user["role"] != "admin":
+    if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"

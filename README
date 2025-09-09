@@ -34,6 +34,8 @@
 ### Installer les dépendances
     pip install -r requirements.txt
 
+### ajout d'autres dépenses
+    pip freeze > requirements.txt 
 
 ### Configurer les variables d’environnement
     # PostgreSQL Configuration

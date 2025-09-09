@@ -1,2 +1,29 @@
-/venv
+# Environnements virtuels
+venv/
 .env
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Base de données SQLite (si jamais utilisée pour tests)
+*.sqlite3
+
+# --------------------
+# Logs
+# --------------------
+*.log
+debug.log
+
+# Dossiers spécifiques
+alembic/versions/__pycache__/
+app/api/__pycache__/
+app/core/__pycache__/
+app/models/__pycache__/
+app/schemas/__pycache__/
+
+# VSCode / PyCharm configs
+.vscode/
+.idea/

@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from typing import Dict, Any
 
-from app.schemas.user import UserCreate, UserOut, UserLogin
+from app.schemas.user import UserCreate, UserOut, UserLogin, OAuthUserCreate
 from app.services.user_service import UserService
 from app.core.security import create_access_token
 from app.core.config import settings
 from app.dependencies import get_db, get_user_service, get_current_user 
-from app.models.user import User  # ← Import manquant
+from app.models.user import User
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -51,7 +52,74 @@ async def login(
             "id": user.id,
             "username": user.username,
             "email": user.email,
-            "role": user.role
+            "role": user.role,
+            "provider": user.provider
+        }
+    }
+
+# Nouvelle route pour l'authentification Google
+@router.post("/google")
+async def google_auth(
+    access_token: str,
+    user_service: UserService = Depends(get_user_service),
+    db: Session = Depends(get_db)
+):
+    user = await user_service.authenticate_google(access_token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Google authentication"
+        )
+    
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_jwt = create_access_token(
+        data={"sub": user.email, "user_id": user.id, "role": user.role},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token_jwt,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "provider": user.provider,
+            "avatar_url": user.avatar_url
+        }
+    }
+
+# Nouvelle route pour l'authentification Facebook
+@router.post("/facebook")
+async def facebook_auth(
+    access_token: str,
+    user_service: UserService = Depends(get_user_service),
+    db: Session = Depends(get_db)
+):
+    user = await user_service.authenticate_facebook(access_token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Facebook authentication"
+        )
+    
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_jwt = create_access_token(
+        data={"sub": user.email, "user_id": user.id, "role": user.role},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token_jwt,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "provider": user.provider,
+            "avatar_url": user.avatar_url
         }
     }
 
